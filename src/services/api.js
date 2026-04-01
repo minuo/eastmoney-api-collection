@@ -196,9 +196,13 @@ export const api = {
     return await fetchApi(url, '基金实时净值');
   },
 
-  getFundHistoryNet: async (code) => {
-    const url = `/api/fund/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=20`;
-    return await fetchApi(url, '基金历史净值');
+  getFundNetDiagram: async (code, range = 'n') => {
+    // 发送请求获取易方达中小盘近1年历史净值数据并返回结果
+    const url = `/api/fundmobapi/FundMApi/FundNetDiagram.ashx?FCODE=${code}&RANGE=${range}&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&_=${new Date().getTime()}`;
+    return await fetchApi(
+      url,
+      '基金净值列表'
+    );
   },
 
   getFundHoldings: async (code) => {
@@ -217,7 +221,7 @@ export const api = {
   },
 
   getFundYieldDiagram: async (code, range = 'y') => {
-    const url = `/api/fundmobapi/FundMNewApi/FundMNIntelligentNavTrend?FCODE=${code}&RANGE=${range}&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0`;
+    const url = `/api/fundmobapi/FundMNewApi/FundMNIntelligentNavTrend?FCODE=${code}&RANGE=${range}&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&_=${new Date().getTime()}`;
     return await fetchApi(url, '基金收益率图表');
   },
 

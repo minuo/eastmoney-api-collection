@@ -297,7 +297,7 @@ async function testFundRealTime() {
  * - RANGE: 时间范围（n表示近1年）
  * - deviceid/plat/product/version: 移动端设备参数
  */
-async function testFundHistoryNet() {
+async function testFundNetDiagram() {
   // 发送请求获取易方达中小盘近1年历史净值数据并返回结果
   return await fetchApi(
     "https://fundmobapi.eastmoney.com/FundMApi/FundNetDiagram.ashx?FCODE=110011&RANGE=n&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0",
@@ -1222,7 +1222,7 @@ async function runTests() {
   console.log("基金相关接口测试");
   console.log("=".repeat(60));
   await testFundRealTime();
-  await testFundHistoryNet();
+  await testFundNetDiagram();
   await testFundHoldings();
   await testFundCompanyInfo();
   await testFundCompanyMapping();

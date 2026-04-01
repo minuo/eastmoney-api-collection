@@ -145,6 +145,7 @@ const indicators = ref([
 ])
 
 const loadYieldData = async () => {
+  console.log('loadYieldData', fundCode.value, benchmark.value, range.value)
   const data = await api.getFundAccumulatedPerformance(fundCode.value, benchmark.value, range.value)
   if (data && data.data) {
     updateYieldChart(data.data)
@@ -196,21 +197,22 @@ const updateYieldChart = (data) => {
 }
 
 const loadNetData = async () => {
-  const data = await api.getFundHistoryNet(fundCode.value)
+  console.log('loadNetData', fundCode.value, netRange.value)
+  const data = await api.getFundNetList(fundCode.value)
   if (data) {
     updateNetChart(data)
   }
 }
 
 const updateNetChart = (data) => {
-  if (!netChartInstance) return
+  if (!netChartInstance || !data || !Array.isArray(data)) return
 
-  // 模拟数据，实际应根据API返回数据调整
-  const dates = ['2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06']
-  const values = [1.0, 1.05, 1.02, 1.08, 1.12, 1.15]
+  // 处理API返回的数据
+  const dates = data.map(item => item.FSRQ || '')
+  const values = data.map(item => parseFloat(item.DWJZ) || 0)
 
   const series = [{
-    name: '净值',
+    name: '单位净值',
     type: 'line',
     data: values,
     smooth: true,
@@ -230,17 +232,29 @@ const updateNetChart = (data) => {
   const option = {
     tooltip: {
       trigger: 'axis',
-      axisPointer: { type: 'cross' }
+      axisPointer: { type: 'cross' },
+      formatter: function(params) {
+        const date = params[0].axisValue
+        const value = params[0].value.toFixed(4)
+        return `${date}<br/>单位净值: ${value}`
+      }
     },
     legend: {
       data: series.map(s => s.name)
     },
     xAxis: {
       type: 'category',
-      data: dates
+      data: dates,
+      axisLabel: {
+        rotate: 45,
+        interval: Math.floor(dates.length / 10)
+      }
     },
     yAxis: {
-      type: 'value'
+      type: 'value',
+      axisLabel: {
+        formatter: '{value}'
+      }
     },
     series
   }
